@@ -91,16 +91,46 @@ function compLogic(table, winPossibility) {
   //  Find row have not yet filled by user
   let searchBool = true;
   winPossibility?.map((row, index) => {
-    {
-      if (!row.includes(searchBool)) {
-        arrRandom.push(index);
-      }
+    if (!row.includes(searchBool)) {
+      arrRandom.push(index);
     }
   });
 
   //  Random cells that still empty to be inserted
   let randomNumber = random(arrRandom);
 
+  if (arrRandom.length == 0) {
+    let cellRowArr = [];
+    winPossibility?.map((row, index) => {
+      console.log("row cell", row);
+      const rowCellTrue = row.some(item => {return item != true})
+      const rowCellFalse = row.some(item => {return item != false})
+      if (rowCellTrue && rowCellFalse) {
+        row.map((cell) => {
+          if (cell != true && cell != false) {
+            console.log("cell cell", cell);
+            cellRowArr = cell.split(",");
+
+            cellRowArr = cellRowArr.map((item) => {
+              return parseInt(item);
+            });
+          }
+        });
+      }
+    });
+
+    console.log("arrRandom222", arrRandom);
+    console.log("cellRowArr222", cellRowArr);
+    var getCell = document.getElementById("myTable").rows[cellRowArr[0]].cells;
+    getCell[cellRowArr[1]].innerHTML = "O";
+
+    let search = cellRowArr[0] + "," + cellRowArr[1];
+    arr = changeArray(winPossibility, search, false);
+    return arr;
+  }
+
+  console.log("arrRandom", arrRandom);
+  console.log("randomNumber", randomNumber);
   //   Get index row and cell index
   let arrCellRandom = [];
   winPossibility[randomNumber].map((item, index) => {
@@ -129,7 +159,6 @@ function compLogic(table, winPossibility) {
 
   var cell = document.getElementById("myTable").rows[cellRowArr[0]].cells;
   cell[cellRowArr[1]].innerHTML = "O";
-  // I think there still bugs here because it reversed beetween row and cell
   let search = cellRowArr[0] + "," + cellRowArr[1];
   arr = changeArray(winPossibility, search, false);
   return arr;
