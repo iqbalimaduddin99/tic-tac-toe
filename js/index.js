@@ -4,6 +4,12 @@ function myFunction() {
 
   // Check if table was created, if has created it will remove and running the code below to create new table
   let element = document.getElementById("myTable");
+  let elementAlert = document.getElementsByClassName("alert");
+  if (elementAlert.length > 0) {
+    for (let i = 0; i < elementAlert.length; i++) {
+      elementAlert[i].remove();
+    }
+  }
   if (element) {
     element.remove();
   }
@@ -28,25 +34,61 @@ function myFunction() {
       // Function used to find potential winning lines
       const datas = checkCorrectLine(i, j, x.value);
       winPossibility.push(...datas);
- 
-      // Still have bug, when it click comp or herself it will autogenerate comp
-      // The finish have not created yet
+
       td.onclick = function () {
+        if (td.textContent) {
+          return;
+        }
+        let getDataTrueElement = document.getElementById("myTable");
+        if (getDataTrueElement.dataset.boolean == "true") {
+          return;
+        }
         let arr = clickCell(td, tr, winPossibility);
         winPossibility = arr;
-        console.log("winPossibility", winPossibility);
+        const stringYouWinner = findWinner(winPossibility, "you", true);
+        if (stringYouWinner == "win") {
+          return;
+        }
+
         let arr2 = compLogic(table, winPossibility);
-        winPossibility = arr2
-        console.log("winPossibility2", winPossibility);
+        winPossibility = arr2;
+        findWinner(winPossibility, "computer", false);
       };
     }
+  }
+}
+
+function functionCreateAlert(stringWinner) {
+  let divAlert = document.createElement("div");
+  divAlert.className = "alert";
+  document.getElementById("div-alert").appendChild(divAlert);
+
+  let spanClass = document.createElement("span");
+  spanClass.className = "closebtn";
+  spanClass.onclick = function () {
+    closeFunctionSpan(this);
+  };
+  let Xsymbol = document.createTextNode("x");
+  spanClass.appendChild(Xsymbol);
+
+  const collection = document.getElementsByClassName("alert");
+  collection[0].appendChild(spanClass);
+
+  let strongElement = document.createElement("strong");
+
+  let textAlert = document.createTextNode(stringWinner);
+  strongElement.appendChild(textAlert);
+
+  document.getElementsByClassName("alert")[0].appendChild(strongElement);
+  function closeFunctionSpan(el) {
+    el.parentElement.style.display = "none";
   }
 }
 
 function compLogic(table, winPossibility) {
   let arrRandom = [];
 
-  //  Find cell still empty
+  //  Find row have not yet filled by user
   let searchBool = true;
   winPossibility?.map((row, index) => {
     {
@@ -62,7 +104,9 @@ function compLogic(table, winPossibility) {
   //   Get index row and cell index
   let arrCellRandom = [];
   winPossibility[randomNumber].map((item, index) => {
-    arrCellRandom.push(index);
+    if (item != false) {
+      arrCellRandom.push(index);
+    }
   });
 
   console.log("arrCellRandom", arrCellRandom);
@@ -72,6 +116,7 @@ function compLogic(table, winPossibility) {
   console.log("winPossibility[randomNumber]", winPossibility[randomNumber]);
   winPossibility[randomNumber].map((item, index) => {
     console.log("index", index);
+    console.log("item", item);
     if (randomNumberCell == index) {
       cellRowArr = item.split(",");
       console.log("cellRowAr1", cellRowArr);
@@ -85,7 +130,7 @@ function compLogic(table, winPossibility) {
   var cell = document.getElementById("myTable").rows[cellRowArr[0]].cells;
   cell[cellRowArr[1]].innerHTML = "O";
   // I think there still bugs here because it reversed beetween row and cell
-  let search = cellRowArr[0] + "," +  cellRowArr[1];
+  let search = cellRowArr[0] + "," + cellRowArr[1];
   arr = changeArray(winPossibility, search, false);
   return arr;
 }
@@ -98,7 +143,7 @@ function random(numbers) {
 // Click for contain the cell
 function clickCell(td, tr, arr) {
   if (!td.textContent) {
-    let search = tr.rowIndex + "," +  td.cellIndex;
+    let search = tr.rowIndex + "," + td.cellIndex;
     arr = changeArray(arr, search, true);
     text = document.createTextNode("X");
     td.appendChild(text);
@@ -108,7 +153,23 @@ function clickCell(td, tr, arr) {
   }
 }
 
-// Used to change the square contain that is filled by user with true boolean
+// Function to find winner
+function findWinner(winPossibility, user, boolean) {
+  let userString = "";
+  winPossibility.map((item) => {
+    const winner = item.every((item) => item == boolean);
+    if (winner == true) {
+      userString = user + " win";
+    }
+  });
+  if (userString != "") {
+    functionCreateAlert(userString);
+    let getDataTrueElement = document.getElementById("myTable");
+    getDataTrueElement.setAttribute("data-boolean", true);
+    return "win";
+  }
+}
+// Used to change the square contain that is filled by user with true boolean or by comp with false boolean
 function changeArray(array2d, itemtofind, bool) {
   return array2d.map((row) => {
     return row.map((cell) => {
@@ -125,7 +186,7 @@ function changeArray(array2d, itemtofind, bool) {
 // When user finish click it bool will be false and automatically generate X for comp.
 // if the array become true, comp automatically get the array still have neutral array, if neutral array is nothing, comp will choose else if to fill random cell.
 
-// The scenario
+// The scenario straight line
 // 0 +1
 // +1 +1
 // +1 0
