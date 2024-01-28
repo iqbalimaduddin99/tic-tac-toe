@@ -19,21 +19,27 @@ td {
   min-height: 60vh;
 }
 .center {
-    margin-top: 50px;
-    display:inline-block;
-  }
+  margin-top: 50px;
+  display: inline-block;
+}
 
 .centerAlign {
-    text-align: center;
+  text-align: center;
 }
+
 .alert {
   padding: 20px;
   background-color: #16e01d;
   color: white;
 }
 
+.alert-lose {
+  padding: 20px;
+  background-color: red;
+  color: white;
+}
+
 .closebtn {
-  margin-left: 15px;
   color: white;
   font-weight: bold;
   float: right;
@@ -41,6 +47,24 @@ td {
   line-height: 20px;
   cursor: pointer;
   transition: 0.3s;
+}
+
+.restart-button {
+  margin-bottom: 10px;
+  height: 20px;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: inline-block;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  font-weight: bold;
+  color: black;
+  background-color: lightcoral;
+  border-color: #ccc;
 }
 
 .closebtn:hover {

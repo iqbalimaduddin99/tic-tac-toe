@@ -4,14 +4,22 @@ function myFunction() {
 
   // Check if table was created, if has created it will remove and running the code below to create new table
   let element = document.getElementById("myTable");
+  let elementRestart = document.getElementById("restart-button");
   let elementAlert = document.getElementsByClassName("alert");
-  if (elementAlert.length > 0) {
+  let elementAlertLose = document.getElementsByClassName("alert-lose");
+  if (elementAlert.length > 0 || elementAlertLose.length > 0) {
     for (let i = 0; i < elementAlert.length; i++) {
       elementAlert[i].remove();
+    }
+    for (let i = 0; i < elementAlertLose.length; i++) {
+      elementAlertLose[i].remove();
     }
   }
   if (element) {
     element.remove();
+  }
+  if (elementRestart) {
+    elementRestart.remove()
   }
 
   // Create the table and his attribute
@@ -59,8 +67,23 @@ function myFunction() {
 }
 
 function functionCreateAlert(stringWinner) {
+  let divRestart = document.createElement("div");
+  divRestart.setAttribute("id", "restart-button");
+  divRestart.className = "restart-button"
+  document.getElementById("div-alert").appendChild(divRestart);
+
+  let textPleaseSubmitAgain = document.createTextNode("Restart");
+  divRestart.appendChild(textPleaseSubmitAgain);
+  divRestart.onclick = function () {
+    myFunction();
+  };
+
   let divAlert = document.createElement("div");
-  divAlert.className = "alert";
+  if (stringWinner.includes("you")) {
+    divAlert.className = "alert";
+  } else {
+    divAlert.className = "alert-lose";
+  }
   document.getElementById("div-alert").appendChild(divAlert);
 
   let spanClass = document.createElement("span");
@@ -71,15 +94,24 @@ function functionCreateAlert(stringWinner) {
   let Xsymbol = document.createTextNode("x");
   spanClass.appendChild(Xsymbol);
 
-  const collection = document.getElementsByClassName("alert");
-  collection[0].appendChild(spanClass);
+  if (stringWinner.includes("you")) {
+    const collection = document.getElementsByClassName("alert");
+    collection[0].appendChild(spanClass);
+  } else {
+    const collection = document.getElementsByClassName("alert-lose");
+    collection[0].appendChild(spanClass);
+  }
 
   let strongElement = document.createElement("strong");
 
   let textAlert = document.createTextNode(stringWinner);
   strongElement.appendChild(textAlert);
 
-  document.getElementsByClassName("alert")[0].appendChild(strongElement);
+  if (stringWinner.includes("you")) {
+    document.getElementsByClassName("alert")[0].appendChild(strongElement);
+  } else {
+    document.getElementsByClassName("alert-lose")[0].appendChild(strongElement);
+  }
   function closeFunctionSpan(el) {
     el.parentElement.style.display = "none";
   }
@@ -103,8 +135,12 @@ function compLogic(table, winPossibility) {
     let cellRowArr = [];
     winPossibility?.map((row, index) => {
       console.log("row cell", row);
-      const rowCellTrue = row.some(item => {return item != true})
-      const rowCellFalse = row.some(item => {return item != false})
+      const rowCellTrue = row.some((item) => {
+        return item != true;
+      });
+      const rowCellFalse = row.some((item) => {
+        return item != false;
+      });
       if (rowCellTrue && rowCellFalse) {
         row.map((cell) => {
           if (cell != true && cell != false) {
