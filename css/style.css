@@ -1,0 +1,28 @@
+table,
+tr,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+tr {
+  height: 70px;
+}
+td {
+  cursor: pointer;
+  width: 70px;
+}
+.center-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 60vh;
+}
+.center {
+    margin-top: 50px;
+    display:inline-block;
+  }
+
+.centerAlign {
+    text-align: center;
+}
