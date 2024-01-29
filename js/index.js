@@ -58,14 +58,14 @@ function myFunction() {
         }
         let arr = clickCell(td, tr, winPossibility);
         winPossibility = arr;
-        const stringYouWinner = findWinner(winPossibility, "you", true);
+        const stringYouWinner = findWinner(winPossibility, "you", true, x.value);
         if (stringYouWinner == "win" || stringYouWinner == "draw") {
           return;
         }
 
         let arr2 = compLogic(table, winPossibility);
         winPossibility = arr2;
-        findWinner(winPossibility, "computer", false);
+        findWinner(winPossibility, "computer", false, x.value);
       };
     }
   }
@@ -233,7 +233,7 @@ function clickCell(td, tr, arr) {
 }
 
 // Function to find winner
-function findWinner(winPossibility, user, boolean) {
+function findWinner(winPossibility, user, boolean, amount) {
   let userString = "";
   let zeroWinPossibility = []
   winPossibility.map((item, index) => {
@@ -246,7 +246,8 @@ function findWinner(winPossibility, user, boolean) {
     }
   });
 
-  if (zeroWinPossibility.length == 8) {
+  console.log(parseInt(amount) * 2 + 2);
+  if (zeroWinPossibility.length == parseInt(amount) * 2 + 2) {
     userString = "draw"
     functionCreateAlert(userString);
     let getDataTrueElement = document.getElementById("myTable");
