@@ -7,19 +7,24 @@ function myFunction() {
   let elementRestart = document.getElementById("restart-button");
   let elementAlert = document.getElementsByClassName("alert");
   let elementAlertLose = document.getElementsByClassName("alert-lose");
-  if (elementAlert.length > 0 || elementAlertLose.length > 0) {
+  let elementAlertDraw = document.getElementsByClassName("alert-draw");
+
+  if (elementAlert.length > 0 || elementAlertLose.length > 0 || elementAlertDraw.length > 0) {
     for (let i = 0; i < elementAlert.length; i++) {
       elementAlert[i].remove();
     }
     for (let i = 0; i < elementAlertLose.length; i++) {
       elementAlertLose[i].remove();
     }
+    for (let i = 0; i < elementAlertDraw.length; i++) {
+      elementAlertDraw[i].remove();
+    }
   }
   if (element) {
     element.remove();
   }
   if (elementRestart) {
-    elementRestart.remove()
+    elementRestart.remove();
   }
 
   // Create the table and his attribute
@@ -54,7 +59,7 @@ function myFunction() {
         let arr = clickCell(td, tr, winPossibility);
         winPossibility = arr;
         const stringYouWinner = findWinner(winPossibility, "you", true);
-        if (stringYouWinner == "win") {
+        if (stringYouWinner == "win" || stringYouWinner == "draw") {
           return;
         }
 
@@ -69,7 +74,7 @@ function myFunction() {
 function functionCreateAlert(stringWinner) {
   let divRestart = document.createElement("div");
   divRestart.setAttribute("id", "restart-button");
-  divRestart.className = "restart-button"
+  divRestart.className = "restart-button";
   document.getElementById("div-alert").appendChild(divRestart);
 
   let textPleaseSubmitAgain = document.createTextNode("Restart");
@@ -81,9 +86,12 @@ function functionCreateAlert(stringWinner) {
   let divAlert = document.createElement("div");
   if (stringWinner.includes("you")) {
     divAlert.className = "alert";
-  } else {
+  } else if (stringWinner.includes("computer")) {
     divAlert.className = "alert-lose";
+  } else {
+    divAlert.className = "alert-draw";
   }
+
   document.getElementById("div-alert").appendChild(divAlert);
 
   let spanClass = document.createElement("span");
@@ -97,8 +105,11 @@ function functionCreateAlert(stringWinner) {
   if (stringWinner.includes("you")) {
     const collection = document.getElementsByClassName("alert");
     collection[0].appendChild(spanClass);
-  } else {
+  } else if (stringWinner.includes("computer")) {
     const collection = document.getElementsByClassName("alert-lose");
+    collection[0].appendChild(spanClass);
+  } else {
+    const collection = document.getElementsByClassName("alert-draw");
     collection[0].appendChild(spanClass);
   }
 
@@ -109,9 +120,12 @@ function functionCreateAlert(stringWinner) {
 
   if (stringWinner.includes("you")) {
     document.getElementsByClassName("alert")[0].appendChild(strongElement);
-  } else {
+  } else if (stringWinner.includes("computer")) {
     document.getElementsByClassName("alert-lose")[0].appendChild(strongElement);
+  } else {
+    document.getElementsByClassName("alert-draw")[0].appendChild(strongElement);
   }
+
   function closeFunctionSpan(el) {
     el.parentElement.style.display = "none";
   }
@@ -221,18 +235,31 @@ function clickCell(td, tr, arr) {
 // Function to find winner
 function findWinner(winPossibility, user, boolean) {
   let userString = "";
-  winPossibility.map((item) => {
+  let zeroWinPossibility = []
+  winPossibility.map((item, index) => {
     const winner = item.every((item) => item == boolean);
+    const winnerDraw = item.some((item) => {return item != false && item != true});
     if (winner == true) {
       userString = user + " win";
+    } else if (winnerDraw == false) {
+      zeroWinPossibility.push(winnerDraw)
     }
   });
+
+  if (zeroWinPossibility.length == 8) {
+    userString = "draw"
+    functionCreateAlert(userString);
+    let getDataTrueElement = document.getElementById("myTable");
+    getDataTrueElement.setAttribute("data-boolean", true);
+    return "draw"
+  }
   if (userString != "") {
     functionCreateAlert(userString);
     let getDataTrueElement = document.getElementById("myTable");
     getDataTrueElement.setAttribute("data-boolean", true);
     return "win";
   }
+  zeroWinPossibility = []
 }
 // Used to change the square contain that is filled by user with true boolean or by comp with false boolean
 function changeArray(array2d, itemtofind, bool) {
